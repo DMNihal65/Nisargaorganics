@@ -1,140 +1,241 @@
-import { useRef, useEffect } from 'react';
-// eslint-disable-next-line no-unused-vars
-import { motion } from 'framer-motion';
+import { useRef, useEffect, useState } from 'react';
+import { motion, useInView, useAnimation } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import leafElement from '../assets/leaf_element.svg';
+import { 
+  Leaf, 
+  Heart, 
+  Globe, 
+  Users, 
+  Sprout, 
+  ShieldCheck, 
+  ChevronRight,
+  Quote,
+  ArrowRight
+} from 'lucide-react';
 
+// Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
 const AboutUs = () => {
   const sectionRef = useRef(null);
-  const timelineRef = useRef(null);
+  const titleRef = useRef(null);
+  const missionRef = useRef(null);
+  const valuesRef = useRef(null);
+  const testimonialsRef = useRef(null);
+  const controls = useAnimation();
+  const isInView = useInView(sectionRef, { once: false, amount: 0.1 });
 
-  // Farmer testimonials
+  // Values data with Lucide icons
+  const valuesData = [
+    {
+      title: "Sustainability",
+      description: "We're committed to environmentally responsible practices throughout our supply chain.",
+      icon: <Leaf size={24} />,
+      color: "#3A7D44"
+    },
+    {
+      title: "Transparency",
+      description: "We believe in complete honesty about our products, processes, and pricing.",
+      icon: <ShieldCheck size={24} />,
+      color: "#4D8B31"
+    },
+    {
+      title: "Community",
+      description: "We support local farmers and strengthen rural communities through fair partnerships.",
+      icon: <Users size={24} />,
+      color: "#5E9A3B"
+    },
+    {
+      title: "Innovation",
+      description: "We continuously improve our methods to better serve people and planet.",
+      icon: <Sprout size={24} />,
+      color: "#6CAE3E"
+    }
+  ];
+
+  // Testimonials data
   const testimonials = [
     {
       id: 1,
-      name: 'Rajesh Kumar',
-      location: 'Karnataka',
-      quote: 'Partnering with Nisarga Organics has transformed my farming practices. I now grow healthier crops and earn a better income for my family.',
-      image: '/images/farmer1.jpg', // Placeholder
+      name: "Rajesh Kumar",
+      location: "Organic Millet Farmer, Karnataka",
+      quote: "Partnering with Nisarga Organics has transformed my farm and family's life. Their fair pricing and long-term commitment helped me convert fully to organic practices.",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
+      color: "#3A7D44"
     },
     {
       id: 2,
-      name: 'Lakshmi Devi',
-      location: 'Tamil Nadu',
-      quote: 'The sustainable farming techniques I learned through Nisarga Organics have improved my soil quality and crop yield significantly.',
-      image: '/images/farmer2.jpg', // Placeholder
+      name: "Lakshmi Devi",
+      location: "Rice Farmer, Tamil Nadu",
+      quote: "Before Nisarga, I struggled to get fair prices for my organic rice. Now I have a reliable partner who values quality and traditional farming methods.",
+      image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
+      color: "#4D8B31"
     },
     {
       id: 3,
-      name: 'Sukhwinder Singh',
-      location: 'Punjab',
-      quote: 'I\'m proud that my organic produce reaches customers directly. It\'s rewarding to know people appreciate the quality of what we grow.',
-      image: '/images/farmer3.jpg', // Placeholder
+      name: "Arjun Singh",
+      location: "Pulses Grower, Madhya Pradesh",
+      quote: "The training and support from Nisarga Organics helped me transition to organic farming. My soil is healthier and my yields have improved year after year.",
+      image: "https://images.unsplash.com/photo-1566753323558-f4e0952af115?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
+      color: "#5E9A3B"
     },
+    {
+      id: 4,
+      name: "Meena Patel",
+      location: "Spice Farmer, Gujarat",
+      quote: "As a woman farmer, I appreciate how Nisarga Organics has created opportunities for me to lead and grow my business while maintaining our traditional spice growing methods.",
+      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
+      color: "#6CAE3E"
+    },
+    {
+      id: 5,
+      name: "Vijay Reddy",
+      location: "Millet Farmer, Andhra Pradesh",
+      quote: "The consistent demand through Nisarga has allowed me to plan my crops better and invest in my farm's future. My children now see farming as a viable profession.",
+      image: "https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1160&q=80",
+      color: "#3A7D44"
+    }
   ];
 
-  // Timeline events
-  const timelineEvents = [
-    {
-      year: '2010',
-      title: 'Our Beginning',
-      description: 'Started with a small farm in Karnataka with a mission to promote organic farming.',
-    },
-    {
-      year: '2014',
-      title: 'Farmer Network',
-      description: 'Expanded our network to include 50+ organic farmers across Southern India.',
-    },
-    {
-      year: '2017',
-      title: 'Certification',
-      description: 'Received official organic certification and launched our first retail store.',
-    },
-    {
-      year: '2020',
-      title: 'E-commerce Launch',
-      description: 'Launched our online store to reach customers nationwide with fresh organic products.',
-    },
-    {
-      year: 'Today',
-      title: 'Growing Community',
-      description: 'Supporting 200+ farmer families and delivering to thousands of health-conscious customers.',
-    },
-  ];
+  // Animate on scroll into view
+  useEffect(() => {
+    if (isInView) {
+      controls.start("visible");
+    }
+  }, [isInView, controls]);
 
   // GSAP animations
   useEffect(() => {
-    const timeline = timelineRef.current;
-    const timelineItems = timeline.querySelectorAll('.timeline-item');
-    
-    // Timeline animation
+    // Title animation
+    gsap.from(titleRef.current.children, {
+      opacity: 0,
+      y: 30,
+      stagger: 0.2,
+      duration: 0.8,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: titleRef.current,
+        start: "top 80%",
+      }
+    });
+
+    // Mission section animation
+    gsap.from(missionRef.current.children, {
+      opacity: 0,
+      y: 50,
+      stagger: 0.15,
+      duration: 0.8,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: missionRef.current,
+        start: "top 75%",
+      }
+    });
+
+    // Values animation
+    const valueCards = valuesRef.current.querySelectorAll('.value-card');
     gsap.fromTo(
-      timelineItems,
-      { 
-        opacity: 0,
-        x: index => index % 2 === 0 ? -50 : 50,
-      },
-      { 
+      valueCards,
+      { opacity: 0, y: 40 },
+      {
         opacity: 1,
-        x: 0,
-        stagger: 0.2,
-        duration: 0.8,
+        y: 0,
+        stagger: 0.1,
+        duration: 0.7,
         ease: "power2.out",
         scrollTrigger: {
-          trigger: timeline,
-          start: "top 70%",
-          end: "bottom 30%",
-          toggleActions: "play none none none",
+          trigger: valuesRef.current,
+          start: "top 80%",
         }
       }
     );
 
-    // Animate the connecting line
-    gsap.fromTo(
-      '.timeline-line',
-      { height: 0 },
-      {
-        height: '100%',
-        duration: 1.5,
-        ease: "power2.inOut",
+    // Auto-scrolling testimonials
+    const testimonialTrack = testimonialsRef.current.querySelector('.testimonial-track');
+    
+    // Clone testimonials for infinite scroll effect
+    if (testimonialTrack) {
+      const clonedItems = [...testimonialTrack.children]
+        .slice(0, Math.min(3, testimonialTrack.children.length))
+        .map(item => item.cloneNode(true));
+      
+      clonedItems.forEach(item => {
+        testimonialTrack.appendChild(item);
+      });
+      
+      // Animate the testimonial track
+      gsap.to(testimonialTrack, {
+        x: `-${(testimonials.length) * 33.33}%`,
+        ease: "none",
+        duration: testimonials.length * 10,
+        repeat: -1,
         scrollTrigger: {
-          trigger: timeline,
-          start: "top 70%",
-          end: "bottom 30%",
-          toggleActions: "play none none none",
+          trigger: testimonialsRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          toggleActions: "play pause resume pause"
         }
-      }
-    );
-
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
+      });
+    }
   }, []);
 
   return (
     <section 
       id="about" 
       ref={sectionRef}
-      className="py-24 bg-[#F5F5F0] relative overflow-hidden"
+      className="py-24 bg-[#FAFAF8] relative overflow-hidden"
     >
-      {/* Decorative elements */}
-      <div className="absolute top-0 right-0 w-72 h-72 bg-[#3A7D44]/5 rounded-full -translate-y-1/3 translate-x-1/3" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#A5D6A7]/10 rounded-full translate-y-1/3 -translate-x-1/3" />
+      {/* Floating leaf elements */}
+      {[1, 2, 3, 4, 5, 6].map((_, index) => (
+        <motion.div
+          key={`leaf-${index}`}
+          className="absolute pointer-events-none z-0"
+          style={{
+            left: `${Math.random() * 90 + 5}%`,
+            top: `${Math.random() * 90 + 5}%`,
+            width: `${Math.random() * 40 + 20}px`,
+            height: `${Math.random() * 40 + 20}px`,
+            transform: `rotate(${Math.random() * 360}deg)`,
+          }}
+          animate={{
+            y: [0, -15, 0],
+            rotate: [0, Math.random() * 10 - 5, 0],
+            opacity: [0.1, 0.15, 0.1]
+          }}
+          transition={{
+            duration: Math.random() * 5 + 5,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: index * 0.8
+          }}
+        >
+          <img src={leafElement} alt="" className="w-full h-full opacity-20" />
+        </motion.div>
+      ))}
+      
+      {/* Background gradient circles */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#3A7D44]/5 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-[#6CAE3E]/5 rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2"></div>
+      </div>
       
       <div className="container mx-auto px-4 relative z-10">
         {/* Section header */}
-        <div className="text-center mb-16">
-          <motion.span 
-            className="text-[#3A7D44] text-sm font-medium tracking-widest uppercase"
+        <div ref={titleRef} className="text-center mb-20">
+          <motion.div
             initial={{ opacity: 0, y: -10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
+            className="inline-block bg-[#3A7D44]/10 px-4 py-1 rounded-full mb-2"
           >
-            Our Story
-          </motion.span>
+            <span className="text-[#3A7D44] text-sm font-medium tracking-widest uppercase flex items-center">
+              <Leaf size={14} className="mr-2" />
+              Our Story
+            </span>
+          </motion.div>
           <motion.h2 
             className="text-4xl md:text-5xl font-bold font-nunito text-[#1E3F22] mt-2"
             initial={{ opacity: 0, y: -10 }}
@@ -156,169 +257,181 @@ const AboutUs = () => {
           </motion.p>
         </div>
 
-        {/* Our mission */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-20">
+        {/* Our mission - Modern card layout */}
+        <div ref={missionRef} className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-24">
+          {/* Main mission statement */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            className="md:col-span-7 rounded-3xl overflow-hidden relative"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
           >
-            <div className="relative">
-              {/* Main image */}
-              <div className="rounded-2xl overflow-hidden shadow-lg">
-                <div className="aspect-w-4 aspect-h-3 bg-[#3A7D44]/20 relative">
-                  {/* Placeholder for farm image */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <svg className="w-20 h-20 text-[#3A7D44]/40" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z" />
-                    </svg>
+            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-0"></div>
+            <div className="relative z-10 p-8 h-full flex flex-col">
+              <div className="mb-6">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#3A7D44]/10 mb-4">
+                  <Heart size={24} className="text-[#3A7D44]" />
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold text-[#1E3F22] mb-2">Our Mission</h3>
+                <div className="w-20 h-1 bg-[#3A7D44] rounded-full mb-6"></div>
+              </div>
+              
+              <p className="text-[#3A7D44]/80 mb-6 leading-relaxed">
+                At Nisarga Organics, we believe that healthy food should be accessible to everyone, 
+                and that farmers should be fairly compensated for their dedication to sustainable practices.
+              </p>
+              
+              <p className="text-[#3A7D44]/80 mb-6 leading-relaxed">
+                We're building a transparent supply chain that connects conscious consumers directly with 
+                organic farmers, eliminating unnecessary middlemen and ensuring quality at every step.
+              </p>
+              
+              <div className="mt-auto">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full bg-[#3A7D44]/10 flex items-center justify-center mr-3">
+                      <Globe size={20} className="text-[#3A7D44]" />
+                    </div>
+                    <div>
+                      <span className="block text-sm text-[#3A7D44]/60">Impact</span>
+                      <span className="block font-medium text-[#1E3F22]">100+ Farming Communities</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full bg-[#3A7D44]/10 flex items-center justify-center mr-3">
+                      <Sprout size={20} className="text-[#3A7D44]" />
+                    </div>
+                    <div>
+                      <span className="block text-sm text-[#3A7D44]/60">Cultivation</span>
+                      <span className="block font-medium text-[#1E3F22]">10,000+ Acres Organic Land</span>
+                    </div>
                   </div>
                 </div>
               </div>
-              
-              {/* Floating elements */}
-              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-white rounded-lg shadow-md p-3 flex flex-col justify-center items-center animate-float">
-                <span className="text-[#3A7D44] font-bold text-3xl">200+</span>
-                <span className="text-[#1E3F22] text-sm text-center">Farmer Families</span>
-              </div>
-              <div className="absolute -top-6 -left-6 w-24 h-24 bg-[#3A7D44] rounded-lg shadow-md p-3 flex flex-col justify-center items-center text-white animate-float" style={{ animationDelay: '1s' }}>
-                <span className="font-bold text-2xl">100%</span>
-                <span className="text-xs text-center">Organic</span>
-              </div>
             </div>
           </motion.div>
-          
+
+          {/* Image card */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            className="md:col-span-5 rounded-3xl overflow-hidden relative h-80 md:h-auto"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
           >
-            <h3 className="text-2xl font-bold text-[#1E3F22] mb-4">Our Mission & Vision</h3>
-            <p className="text-[#3A7D44]/80 mb-6">
-              Nisarga Organics was founded with a simple yet powerful vision: to connect health-conscious consumers 
-              directly with organic farmers, eliminating middlemen and ensuring both fair compensation for farmers 
-              and high-quality, affordable organic products for customers.
-            </p>
-            <p className="text-[#3A7D44]/80 mb-6">
-              We believe that organic farming is not just a method of growing food, but a philosophy that respects 
-              the natural ecosystem, promotes biodiversity, and ensures long-term sustainability of our agricultural lands.
-            </p>
-            
-            <div className="grid grid-cols-2 gap-4 mt-8">
-              <div className="bg-white rounded-lg p-4 shadow-sm border border-[#3A7D44]/10">
-                <div className="w-10 h-10 rounded-full bg-[#3A7D44]/10 flex items-center justify-center mb-3 text-[#3A7D44]">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12,3C16.97,3 21,7.03 21,12C21,16.97 16.97,21 12,21C7.03,21 3,16.97 3,12C3,7.03 7.03,3 12,3M12,5C8.14,5 5,8.14 5,12C5,15.86 8.14,19 12,19C15.86,19 19,15.86 19,12C19,8.14 15.86,5 12,5M12,7C14.76,7 17,9.24 17,12C17,14.76 14.76,17 12,17C9.24,17 7,14.76 7,12C7,9.24 9.24,7 12,7M12,9C10.34,9 9,10.34 9,12C9,13.66 10.34,15 12,15C13.66,15 15,13.66 15,12C15,10.34 13.66,9 12,9Z" />
-                  </svg>
-                </div>
-                <h4 className="font-semibold text-[#1E3F22]">Our Values</h4>
-                <p className="text-sm text-[#3A7D44]/80 mt-1">Integrity, sustainability, and community empowerment guide everything we do.</p>
-              </div>
-              
-              <div className="bg-white rounded-lg p-4 shadow-sm border border-[#3A7D44]/10">
-                <div className="w-10 h-10 rounded-full bg-[#3A7D44]/10 flex items-center justify-center mb-3 text-[#3A7D44]">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M17.55,11.2C17.32,10.9 17.05,10.64 16.79,10.38C16.14,9.78 15.39,9.35 14.76,8.72C13.3,7.26 13,4.85 13.91,3C13,3.23 12.16,3.75 11.46,4.32C8.92,6.4 7.92,10.07 9.12,13.22C9.16,13.32 9.2,13.42 9.2,13.55C9.2,13.77 9.05,13.97 8.85,14.05C8.63,14.15 8.39,14.09 8.21,13.93C8.15,13.88 8.11,13.83 8.06,13.76C6.96,12.33 6.78,10.28 7.53,8.64C5.89,10 5,12.3 5.14,14.47C5.18,14.97 5.24,15.47 5.41,15.97C5.55,16.57 5.81,17.17 6.13,17.7C7.17,19.43 9,20.67 10.97,20.92C13.07,21.19 15.32,20.8 16.93,19.32C18.73,17.66 19.38,15 18.43,12.72L18.3,12.46C18.1,12 17.83,11.59 17.5,11.21L17.55,11.2M14.45,17.5C14.17,17.74 13.72,18 13.37,18.1C12.27,18.5 11.17,17.94 10.5,17.28C11.69,17 12.39,16.12 12.59,15.23C12.76,14.43 12.45,13.77 12.32,13C12.2,12.26 12.22,11.63 12.5,10.94C12.67,11.32 12.87,11.7 13.1,12C13.86,13 15.05,13.44 15.3,14.8C15.34,14.94 15.36,15.08 15.36,15.23C15.39,16.05 15.04,16.95 14.44,17.5H14.45Z" />
-                  </svg>
-                </div>
-                <h4 className="font-semibold text-[#1E3F22]">Our Impact</h4>
-                <p className="text-sm text-[#3A7D44]/80 mt-1">Transforming rural economies and promoting healthier food choices nationwide.</p>
+            <div className="absolute inset-0 bg-gradient-to-br from-[#3A7D44]/10 to-[#3A7D44]/5 backdrop-blur-sm z-0"></div>
+            <div className="relative z-10 h-full flex items-center justify-center p-8">
+              <div className="w-full h-full rounded-2xl overflow-hidden shadow-lg">
+                <img 
+                  src="https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80" 
+                  alt="Organic farming" 
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </motion.div>
         </div>
 
-        {/* Our journey timeline */}
-        <div className="mb-20">
+        {/* Our values - Modern grid */}
+        <div className="mb-24">
           <motion.h3 
-            className="text-2xl font-bold text-[#1E3F22] text-center mb-12"
+            className="text-3xl font-bold text-[#1E3F22] text-center mb-12"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            Our Journey
+            Our Core Values
           </motion.h3>
           
-          <div 
-            ref={timelineRef}
-            className="relative"
-          >
-            {/* Timeline center line */}
-            <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-[#3A7D44]/20 transform -translate-x-1/2 timeline-line" />
-            
-            {/* Timeline events */}
-            {timelineEvents.map((event, index) => (
-              <div 
-                key={event.year}
-                className={`timeline-item flex mb-12 ${
-                  index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'
-                }`}
-              >
-                <div className="w-1/2 px-6">
-                  <div className={`${
-                    index % 2 === 0 ? 'text-right' : 'text-left'
-                  }`}>
-                    <span className="text-[#3A7D44] font-bold text-xl">{event.year}</span>
-                    <h4 className="text-[#1E3F22] font-semibold text-lg mt-1">{event.title}</h4>
-                    <p className="text-[#3A7D44]/80 mt-2">{event.description}</p>
-                  </div>
-                </div>
-                
-                {/* Center dot */}
-                <div className="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-[#3A7D44] rounded-full border-4 border-[#F5F5F0] z-10" />
-                
-                <div className="w-1/2 px-6" />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Farmer testimonials */}
-        <div>
-          <motion.h3 
-            className="text-2xl font-bold text-[#1E3F22] text-center mb-12"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            Farmer Testimonials
-          </motion.h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={testimonial.id}
-                className="bg-white rounded-xl p-6 shadow-md border border-[#3A7D44]/10 relative"
+          <div ref={valuesRef} className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {valuesData.map((value, index) => (
+              <motion.div 
+                key={index}
+                className="value-card bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-[#3A7D44]/10 hover:shadow-lg transition-all duration-300"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ y: -5, transition: { duration: 0.2 } }}
               >
-                {/* Quote icon */}
-                <div className="absolute -top-4 -left-4 w-8 h-8 bg-[#3A7D44] rounded-full flex items-center justify-center text-white">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M10,7L8,11H11V17H5V11L7,7H10M18,7L16,11H19V17H13V11L15,7H18Z" />
-                  </svg>
-                </div>
-                
-                <p className="text-[#3A7D44]/80 italic mb-6">"{testimonial.quote}"</p>
-                
-                <div className="flex items-center">
-                  <div className="w-12 h-12 rounded-full bg-[#3A7D44]/20 flex items-center justify-center mr-4">
-                    <svg className="w-6 h-6 text-[#3A7D44]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-[#1E3F22]">{testimonial.name}</h4>
-                    <p className="text-sm text-[#3A7D44]/80">{testimonial.location}</p>
+                <div 
+                  className="w-14 h-14 rounded-xl flex items-center justify-center mb-5"
+                  style={{ 
+                    background: `linear-gradient(135deg, ${value.color}15, ${value.color}30)`,
+                  }}
+                >
+                  <div className="text-[#3A7D44]">
+                    {value.icon}
                   </div>
                 </div>
+                <h4 className="text-xl font-bold text-[#1E3F22] mb-3">{value.title}</h4>
+                <p className="text-[#3A7D44]/80">{value.description}</p>
               </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Farmer testimonials - Auto-scrolling carousel */}
+        <div className="mb-24">
+          <motion.h3 
+            className="text-3xl font-bold text-[#1E3F22] text-center mb-12"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            Voices from Our Farmers
+          </motion.h3>
+          
+          <div 
+            ref={testimonialsRef} 
+            className="relative overflow-hidden"
+          >
+            <div className="testimonial-track flex">
+              {testimonials.map((testimonial) => (
+                <div 
+                  key={testimonial.id} 
+                  className="w-full md:w-1/3 flex-shrink-0 px-4"
+                >
+                  <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-[#3A7D44]/10 h-full hover:shadow-lg transition-all duration-300">
+                    <div className="mb-6 flex justify-between items-start">
+                      <div className="flex items-center">
+                        <div className="w-14 h-14 rounded-full overflow-hidden mr-4 border-2" style={{ borderColor: testimonial.color }}>
+                          <img 
+                            src={testimonial.image} 
+                            alt={testimonial.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-[#1E3F22]">{testimonial.name}</h4>
+                          <p className="text-sm text-[#3A7D44]">{testimonial.location}</p>
+                        </div>
+                      </div>
+                      <Quote size={24} className="text-[#3A7D44]/20" />
+                    </div>
+                    <p className="text-[#3A7D44]/80 italic leading-relaxed">"{testimonial.quote}"</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Gradient overlays for infinite scroll effect */}
+            <div className="absolute top-0 bottom-0 left-0 w-12 bg-gradient-to-r from-[#FAFAF8] to-transparent z-10"></div>
+            <div className="absolute top-0 bottom-0 right-0 w-12 bg-gradient-to-l from-[#FAFAF8] to-transparent z-10"></div>
+          </div>
+          
+          {/* Manual navigation dots */}
+          <div className="flex justify-center mt-8 space-x-2">
+            {testimonials.slice(0, Math.min(5, testimonials.length)).map((_, index) => (
+              <button 
+                key={index}
+                className="w-2 h-2 rounded-full bg-[#3A7D44]/30 hover:bg-[#3A7D44] transition-colors duration-300"
+                aria-label={`Go to testimonial ${index + 1}`}
+              ></button>
             ))}
           </div>
         </div>
@@ -333,12 +446,10 @@ const AboutUs = () => {
         >
           <a 
             href="#contact" 
-            className="bg-[#3A7D44] hover:bg-[#2C5E33] text-white px-8 py-3 rounded-full text-base font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg inline-flex items-center"
+            className="bg-[#3A7D44] hover:bg-[#2C5E33] text-white px-8 py-4 rounded-full text-base font-medium transition-all duration-300 inline-flex items-center group"
           >
-            <span>Join Our Mission</span>
-            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
+            <span>Connect With Us</span>
+            <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform duration-300" />
           </a>
         </motion.div>
       </div>

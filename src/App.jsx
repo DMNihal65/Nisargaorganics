@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+// eslint-disable-next-line no-unused-vars
+import { AnimatePresence, motion } from 'framer-motion';
 import Loader from './components/Loader';
 import HeroSection from './components/HeroSection';
 import Navbar from './components/Navbar';
@@ -12,15 +13,49 @@ import './App.css'
 
 function App() {
   const [loading, setLoading] = useState(true);
+  const [contentReady, setContentReady] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const mainContentRef = useRef(null);
 
   useEffect(() => {
-    // Simulate loading time (you can replace this with actual data loading)
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
+    // Preload essential assets
+    const preloadImages = async () => {
+      const imageUrls = [
+        // Add essential image URLs here if needed
+      ];
+      
+      const preloadPromises = imageUrls.map((url) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = url;
+        });
+      });
+      
+      try {
+        // Simulate a minimum loading time while loading actual assets
+        await Promise.all([
+          ...preloadPromises,
+          new Promise(resolve => setTimeout(resolve, 3000)) // Minimum 3 second loader
+        ]);
+        
+        // Set loading to false first
+        setLoading(false);
+        
+        // Then delay slightly before showing content for a smooth transition
+        setTimeout(() => {
+          setContentReady(true);
+        }, 100);
+      } catch (error) {
+        console.error("Failed to preload some assets", error);
+        // Still continue with the app
+        setLoading(false);
+        setTimeout(() => setContentReady(true), 100);
+      }
+    };
+    
+    preloadImages();
   }, []);
 
   // Handle scroll event to add blur effect to navbar
@@ -37,36 +72,57 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Page transition variants
+  const pageVariants = {
+    initial: {
+      opacity: 0,
+    },
+    animate: {
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+        ease: "easeInOut",
+        when: "beforeChildren",
+        staggerChildren: 0.2,
+      }
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        duration: 0.5,
+        ease: "easeInOut",
+      }
+    }
+  };
+
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
       <AnimatePresence mode="wait">
         {loading && <Loader />}
       </AnimatePresence>
       
-      {!loading && (
-        <>
-          <Navbar />
-          <main className="min-h-screen">
-            <HeroSection />
-            <Products />
-            <Services />
-            <AboutUs />
-            <ContactUs />
-          </main>
-          <Footer />
-        </>
-      )}
-
-      {/* Blur overlay for navbar when scrolled */}
-      {scrolled && !loading && (
-        <div 
-          className="fixed top-0 left-0 w-full h-20 bg-white/70 backdrop-blur-md z-40 pointer-events-none"
-          style={{ 
-            transition: 'opacity 0.3s ease-in-out',
-            opacity: scrolled ? 1 : 0 
-          }}
-        />
-      )}
+      <AnimatePresence mode="wait">
+        {!loading && (
+          <motion.div
+            className="page-wrapper"
+            initial="initial"
+            animate={contentReady ? "animate" : "initial"}
+            exit="exit"
+            variants={pageVariants}
+            ref={mainContentRef}
+          >
+            <Navbar scrolled={scrolled} />
+            <main className="min-h-screen">
+              <HeroSection />
+              <Products />
+              <Services />
+              <AboutUs />
+              <ContactUs />
+            </main>
+            <Footer />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

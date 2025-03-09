@@ -1,126 +1,342 @@
 import { useRef, useEffect } from 'react';
-// eslint-disable-next-line no-unused-vars
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import leafElement from '../assets/leaf_element.svg';
+import { 
+  Leaf, 
+  Sprout, 
+  Truck, 
+  ShieldCheck, 
+  Recycle, 
+  Users, 
+  BarChart, 
+  CheckCircle2, 
+  ChevronRight,
+  Award,
+  Droplets,
+  Sun,
+  Heart
+} from 'lucide-react';
 
+// Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
 const Services = () => {
+  // Refs for animations
   const sectionRef = useRef(null);
-  const servicesRef = useRef(null);
+  const titleRef = useRef(null);
+  const servicesGridRef = useRef(null);
+  const processRef = useRef(null);
+  const certificationRef = useRef(null);
 
-  // Service data
+  // Services data
   const services = [
     {
       id: 1,
-      title: 'Sustainable Farming',
-      description: 'We support farmers who practice sustainable agriculture without harmful chemicals, preserving soil health and biodiversity.',
-      icon: (
-        <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12,3C16.97,3 21,7.03 21,12C21,12.57 20.94,13.12 20.83,13.66C20.55,13.25 20.2,12.89 19.79,12.6C19.91,12.41 20,12.21 20.07,12C20.07,12 20.07,12 20.07,12C20.03,11.67 20,11.34 20,11C20,7.58 17.42,5 14,5C13.66,5 13.33,5.03 13,5.07C13,5.07 13,5.07 13,5.07C12.79,5 12.59,4.91 12.4,4.79C12.11,4.2 11.75,3.66 11.34,3.18C11.55,3.12 11.77,3.07 12,3.07V3M12,15C13.1,15 14,15.9 14,17C14,18.1 13.1,19 12,19C10.9,19 10,18.1 10,17C10,15.9 10.9,15 12,15M12,21C8.97,21 6.5,18.53 6.5,15.5C6.5,12.47 8.97,10 12,10C15.03,10 17.5,12.47 17.5,15.5C17.5,18.53 15.03,21 12,21M4.93,4.93C3.12,6.74 2,9.24 2,12C2,14.76 3.12,17.26 4.93,19.07L6.34,17.66C4.89,16.22 4,14.22 4,12C4,9.79 4.89,7.78 6.34,6.34L4.93,4.93M19.07,4.93L17.66,6.34C19.11,7.78 20,9.79 20,12C20,12.2 20,12.4 19.97,12.6C20.4,12.8 20.8,13.1 21.2,13.4C21.3,12.9 21.4,12.5 21.4,12C21.4,9.2 20.3,6.7 18.5,4.9L19.1,4.9M16.9,7.1C15.66,5.86 14,5.09 12.16,5C12.07,5.25 12,5.56 12,5.87C12,6.15 12.03,6.43 12.08,6.7C13.21,6.86 14.22,7.42 15,8.2C15.79,9 16.34,10 16.5,11.13C16.78,11.18 17.05,11.21 17.33,11.21C17.65,11.21 17.95,11.14 18.2,11.05C18.11,9.22 17.34,7.55 16.1,6.31V7.1Z" />
-        </svg>
-      ),
+      title: "Sustainable Farming",
+      description: "We partner with farmers who practice sustainable agriculture, preserving soil health and biodiversity.",
+      icon: <Sprout size={28} />,
+      color: "#3A7D44",
+      size: "large",
+      benefits: [
+        "Zero chemical pesticides",
+        "Water conservation techniques",
+        "Soil regeneration practices"
+      ]
     },
     {
       id: 2,
-      title: 'Direct Farmer-to-Customer',
-      description: 'By eliminating middlemen, we ensure farmers receive fair compensation while customers get fresher products at better prices.',
-      icon: (
-        <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42C6.38,9.85 6.8,11.27 7.66,12.38C7.16,13.34 6.16,14 5,14A3,3 0 0,1 2,11A3,3 0 0,1 5,8M19,8A3,3 0 0,1 22,11A3,3 0 0,1 19,14C17.84,14 16.84,13.34 16.34,12.38C17.2,11.27 17.62,9.85 17.47,8.42C17.92,8.15 18.44,8 19,8M5.5,18.25C5.5,16.18 8.41,14.5 12,14.5C15.59,14.5 18.5,16.18 18.5,18.25V20H5.5V18.25M0,20V18.5C0,17.11 1.89,15.94 4.45,15.6C3.86,16.28 3.5,17.22 3.5,18.25V20H0M24,20H20.5V18.25C20.5,17.22 20.14,16.28 19.55,15.6C22.11,15.94 24,17.11 24,18.5V20Z" />
-        </svg>
-      ),
+      title: "Eco-Friendly Packaging",
+      description: "All our products come in biodegradable or recyclable packaging to minimize environmental impact.",
+      icon: <Recycle size={28} />,
+      color: "#6CAE3E",
+      size: "small",
+      benefits: [
+        "Biodegradable materials",
+        "Minimal plastic use",
+        "Reusable containers"
+      ]
     },
     {
       id: 3,
-      title: 'Organic Certification',
-      description: 'All our products are certified organic, ensuring they meet the highest standards of purity and are free from harmful chemicals.',
-      icon: (
-        <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12,2L15.09,8.26L22,9.27L17,14.14L18.18,21.02L12,17.77L5.82,21.02L7,14.14L2,9.27L8.91,8.26L12,2M12,5.5L10.16,9.05L6.62,9.63L9.31,12.26L8.68,15.77L12,14.09L15.32,15.77L14.69,12.26L17.38,9.63L13.84,9.05L12,5.5Z" />
-        </svg>
-      ),
+      title: "Fair Trade Practices",
+      description: "We ensure farmers receive fair compensation for their produce, supporting rural communities.",
+      icon: <Users size={28} />,
+      color: "#5E9A3B",
+      size: "small",
+      benefits: [
+        "Direct farmer payments",
+        "Community development",
+        "Transparent pricing"
+      ]
     },
     {
       id: 4,
-      title: 'Eco-Friendly Packaging',
-      description: 'We use biodegradable and recyclable packaging materials to minimize environmental impact and reduce plastic waste.',
-      icon: (
-        <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M21.82,15.42L19.32,19.75C18.83,20.61 17.92,21.06 17,21H15V23L12.5,18.5L15,14V16H17.82L15.6,12.15L19.93,9.65L21.73,12.77C22.25,13.54 22.32,14.57 21.82,15.42M9.21,3.06H14.21C15.19,3.06 16.04,3.63 16.45,4.45L17.45,6.19L19.18,5.19L16.54,9.6L11.39,9.69L13.12,8.69L11.71,6.24L9.5,10.09L5.16,7.59L6.96,4.47C7.37,3.64 8.22,3.06 9.21,3.06M5.05,19.76L2.55,15.43C2.06,14.58 2.13,13.56 2.64,12.79L3.64,11.06L1.91,10.06L7.05,10.14L9.7,14.56L7.97,13.56L6.56,16H11V21H7.4C6.47,21.07 5.55,20.61 5.05,19.76Z" />
-        </svg>
-      ),
+      title: "Quality Assurance",
+      description: "Every product undergoes rigorous quality checks to ensure you receive the best organic food.",
+      icon: <ShieldCheck size={28} />,
+      color: "#4D8B31",
+      size: "small",
+      benefits: [
+        "Lab-tested products",
+        "Organic certification",
+        "Nutrient preservation"
+      ]
     },
+    {
+      id: 5,
+      title: "Carbon-Neutral Delivery",
+      description: "Our delivery network is designed to minimize carbon footprint through route optimization and electric vehicles.",
+      icon: <Truck size={28} />,
+      color: "#3A7D44",
+      size: "small",
+      benefits: [
+        "Electric delivery fleet",
+        "Optimized routes",
+        "Carbon offset programs"
+      ]
+    },
+    
   ];
 
-  // Animation for services
+  // Process steps
+  const processSteps = [
+    {
+      title: "Sustainable Harvesting",
+      description: "Farmers use traditional and sustainable methods to harvest crops at peak ripeness, ensuring maximum nutrition and flavor.",
+      icon: <Leaf size={24} />,
+      color: "#3A7D44"
+    },
+    {
+      title: "Quality Inspection",
+      description: "Each batch undergoes thorough quality checks for organic certification, nutritional content, and freshness.",
+      icon: <ShieldCheck size={24} />,
+      color: "#6CAE3E"
+    },
+    {
+      title: "Eco-Friendly Processing",
+      description: "Minimal processing using energy-efficient methods preserves nutrients and natural flavors.",
+      icon: <Recycle size={24} />,
+      color: "#5E9A3B"
+    },
+    {
+      title: "Sustainable Packaging",
+      description: "Products are packaged in biodegradable or recyclable materials to minimize environmental impact.",
+      icon: <Droplets size={24} />,
+      color: "#4D8B31"
+    },
+    {
+      title: "Carbon-Neutral Delivery",
+      description: "Our optimized delivery network uses electric vehicles and carbon offset programs to minimize environmental impact.",
+      icon: <Truck size={24} />,
+      color: "#3A7D44"
+    }
+  ];
+
+  // Certifications
+  const certifications = [
+    {
+      name: "USDA Organic",
+      description: "Certified organic according to USDA standards",
+      icon: <Award size={32} />,
+      color: "#3A7D44"
+    },
+    {
+      name: "Non-GMO Project",
+      description: "Verified products without genetically modified organisms",
+      icon: <Sprout size={32} />,
+      color: "#6CAE3E"
+    },
+    {
+      name: "Fair Trade Certified",
+      description: "Meeting rigorous social, environmental and economic standards",
+      icon: <Heart size={32} />,
+      color: "#5E9A3B"
+    },
+    {
+      name: "Rainforest Alliance",
+      description: "Supporting biodiversity and sustainable livelihoods",
+      icon: <Sun size={32} />,
+      color: "#4D8B31"
+    }
+  ];
+
+  // Parallax effect for the title section
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"]
+  });
+
+  const y = useTransform(scrollYProgress, [0, 0.3], [0, 100]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+  const springY = useSpring(y, { damping: 15, stiffness: 100 });
+  const springOpacity = useSpring(opacity, { damping: 15, stiffness: 100 });
+
+  // Main GSAP animations
   useEffect(() => {
-    // const section = sectionRef.current;
-    const serviceItems = servicesRef.current.querySelectorAll('.service-item');
-
-    // Animate services on scroll
-    serviceItems.forEach((item, index) => {
-      gsap.fromTo(
-        item,
-        { 
-          opacity: 0,
-          y: 50
-        },
-        { 
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: item,
-            start: "top 80%",
-            toggleActions: "play none none none"
-          },
-          delay: index * 0.2
+    // Services grid animation
+    const serviceCards = servicesGridRef.current.querySelectorAll('.service-card');
+    
+    gsap.fromTo(serviceCards, 
+      { y: 50, opacity: 0 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        stagger: 0.1, 
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: servicesGridRef.current,
+          start: "top 80%",
+          toggleActions: "play none none none"
         }
-      );
-    });
+      }
+    );
 
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
+    // Process steps animation
+    const processSteps = processRef.current.querySelectorAll('.process-step');
+    const processLines = processRef.current.querySelectorAll('.process-line');
+    
+    gsap.fromTo(processSteps, 
+      { y: 30, opacity: 0 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        stagger: 0.2, 
+        duration: 0.6,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: processRef.current,
+          start: "top 75%",
+          toggleActions: "play none none none"
+        }
+      }
+    );
+    
+    gsap.fromTo(processLines, 
+      { height: 0, opacity: 0 },
+      { 
+        height: "100%", 
+        opacity: 1, 
+        stagger: 0.2, 
+        duration: 0.8,
+        delay: 0.3,
+        ease: "power2.inOut",
+        scrollTrigger: {
+          trigger: processRef.current,
+          start: "top 75%",
+          toggleActions: "play none none none"
+        }
+      }
+    );
+
+    // Certifications animation
+    const certCards = certificationRef.current.querySelectorAll('.cert-card');
+    
+    gsap.fromTo(certCards, 
+      { y: 20, opacity: 0 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        stagger: 0.1, 
+        duration: 0.6,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: certificationRef.current,
+          start: "top 80%",
+          toggleActions: "play none none none"
+        }
+      }
+    );
   }, []);
 
   return (
     <section 
-      id="services" 
       ref={sectionRef}
-      className="py-24 bg-gradient-to-b from-[#F5F5F0] to-white relative overflow-hidden"
+      id="services" 
+      className="relative overflow-hidden py-32"
+      style={{
+        background: "linear-gradient(to bottom, #fafcf8, #f2f7f0)",
+      }}
     >
-      {/* Decorative elements */}
-      <div className="absolute top-0 left-1/4 w-64 h-64 bg-[#3A7D44]/5 rounded-full -translate-y-1/2" />
-      <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-[#A5D6A7]/10 rounded-full translate-y-1/2" />
-      
+      {/* Floating leaves background */}
+      {Array.from({ length: 12 }).map((_, index) => (
+        <motion.div
+          key={`leaf-${index}`}
+          className="absolute pointer-events-none"
+          style={{
+            left: `${Math.random() * 90 + 5}%`,
+            top: `${Math.random() * 90 + 5}%`,
+            opacity: 0.07 + Math.random() * 0.08,
+            width: `${Math.random() * 60 + 20}px`,
+            height: `${Math.random() * 60 + 20}px`,
+            transform: `rotate(${Math.random() * 360}deg)`,
+            zIndex: 0
+          }}
+          animate={{
+            y: [0, Math.random() * -25 - 10, 0],
+            x: [0, Math.random() * 20 - 10, 0],
+            rotate: [0, Math.random() * 20 - 10, 0],
+          }}
+          transition={{
+            duration: Math.random() * 8 + 7,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: index * 0.5
+          }}
+        >
+          <img src={leafElement} alt="" className="w-full h-full" />
+        </motion.div>
+      ))}
+
+      {/* Background gradient circles */}
+      <motion.div 
+        className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.15 }}
+        transition={{ duration: 2 }}
+      >
+        <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] rounded-full" style={{ background: "radial-gradient(circle, rgba(58,125,68,0.2) 0%, rgba(58,125,68,0) 70%)" }}></div>
+        <div className="absolute top-[60%] -right-[10%] w-[40%] h-[40%] rounded-full" style={{ background: "radial-gradient(circle, rgba(94,154,59,0.15) 0%, rgba(94,154,59,0) 70%)" }}></div>
+        <div className="absolute top-[80%] left-[20%] w-[30%] h-[30%] rounded-full" style={{ background: "radial-gradient(circle, rgba(77,139,49,0.1) 0%, rgba(77,139,49,0) 70%)" }}></div>
+      </motion.div>
+
       <div className="container mx-auto px-4 relative z-10">
-        {/* Section header */}
-        <div className="text-center mb-16">
-          <motion.span 
-            className="text-[#3A7D44] text-sm font-medium tracking-widest uppercase"
-            initial={{ opacity: 0, y: -10 }}
+        {/* Section header with parallax effect */}
+        <motion.div 
+          ref={titleRef}
+          className="text-center mb-24"
+          style={{ 
+            y: springY,
+            opacity: springOpacity
+          }}
+        >
+          <motion.div 
+            className="inline-block bg-[#3A7D44]/10 px-5 py-2 rounded-full mb-3"
+            initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            Our Approach
-          </motion.span>
+            <span className="text-[#3A7D44] text-sm font-medium tracking-widest uppercase">
+              Our Approach
+            </span>
+          </motion.div>
+          
           <motion.h2 
-            className="text-4xl md:text-5xl font-bold font-nunito text-[#1E3F22] mt-2"
-            initial={{ opacity: 0, y: -10 }}
+            className="text-5xl md:text-6xl font-bold font-nunito text-[#1E3F22] mt-3 mb-6"
+            initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            Sustainable & Ethical
+            <span className="block">Sustainable <span className="text-[#3A7D44]">&</span> Ethical</span>
           </motion.h2>
+          
           <motion.p 
-            className="mt-4 text-[#3A7D44]/80 max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: -10 }}
+            className="text-lg text-[#3A7D44]/80 max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -128,70 +344,224 @@ const Services = () => {
             At Nisarga Organics, we're committed to sustainable farming practices that benefit 
             both people and the planet. Here's how we make a difference.
           </motion.p>
-        </div>
+        </motion.div>
 
-        {/* Services grid */}
+        {/* Services - Modern bento grid layout */}
         <div 
-          ref={servicesRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          ref={servicesGridRef}
+          className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-32"
         >
           {services.map((service) => (
-            <div 
+            <motion.div 
               key={service.id}
-              className="service-item bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-[#3A7D44]/10 flex flex-col items-center text-center"
+              className={`service-card relative rounded-3xl overflow-hidden backdrop-blur-sm ${
+                service.size === 'large' ? 'md:col-span-8' : 'md:col-span-4'
+              }`}
+              whileHover={{ 
+                y: -10,
+                transition: { duration: 0.3, ease: "easeOut" } 
+              }}
             >
-              <div className="w-16 h-16 rounded-full bg-[#3A7D44]/10 flex items-center justify-center mb-5 text-[#3A7D44]">
-                {service.icon}
+              {/* Glassmorphism background */}
+              <div className="absolute inset-0 bg-white/40 backdrop-blur-sm z-0"></div>
+              
+              {/* Border with gradient animation */}
+              <div className="absolute inset-0 rounded-3xl" style={{
+                background: `linear-gradient(45deg, ${service.color}20, transparent, ${service.color}10)`,
+                backgroundSize: "200% 200%",
+                animation: "gradientBorderAnimation 8s ease infinite",
+              }}></div>
+              
+              {/* Content wrapper */}
+              <div className="relative z-10 h-full p-8 md:p-10 flex flex-col">
+                {/* Service icon with animated gradient */}
+                <div 
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500"
+                  style={{ 
+                    background: `linear-gradient(135deg, ${service.color}20, ${service.color}40)`,
+                    boxShadow: `0 8px 20px -10px ${service.color}50`
+                  }}
+                >
+                  <div className="text-[#3A7D44]">
+                    {service.icon}
+                  </div>
+                </div>
+                
+                {/* Service title with animation */}
+                <h3 className="text-3xl font-bold text-[#1E3F22] mb-4 group transition-all duration-300 relative">
+                  {service.title}
+                  <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-[#3A7D44] group-hover:w-1/3 transition-all duration-500"></span>
+                </h3>
+                
+                {/* Service description */}
+                <p className="text-[#3A7D44]/80 mb-8 leading-relaxed">
+                  {service.description}
+                </p>
+                
+                {/* Service benefits */}
+                <div className="mt-auto space-y-4">
+                  {service.benefits.map((benefit, i) => (
+                    <div 
+                      key={i} 
+                      className="flex items-center transition-all duration-300 hover:translate-x-1"
+                    >
+                      <span 
+                        className="w-8 h-8 rounded-full flex items-center justify-center mr-3"
+                        style={{ 
+                          backgroundColor: `${service.color}15`,
+                        }}
+                      >
+                        <CheckCircle2 size={16} className="text-[#3A7D44]" />
+                      </span>
+                      <span 
+                        className="text-sm font-medium"
+                        style={{ color: service.color }}
+                      >
+                        {benefit}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-[#1E3F22] mb-3">{service.title}</h3>
-              <p className="text-[#3A7D44]/80">{service.description}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
 
-        {/* Certifications */}
-        <motion.div 
-          className="mt-20 bg-white rounded-2xl p-8 shadow-md border border-[#3A7D44]/10"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-        >
-          <div className="flex flex-col md:flex-row items-center">
-            <div className="md:w-1/2 mb-8 md:mb-0 md:pr-8">
-              <h3 className="text-2xl font-bold text-[#1E3F22] mb-4">Our Certifications</h3>
-              <p className="text-[#3A7D44]/80 mb-6">
-                We take pride in maintaining the highest standards of organic farming and food safety. 
-                Our products are certified by leading organizations, ensuring you receive only the best quality.
-              </p>
-              <ul className="space-y-3">
-                {['Organic Certified', 'Non-GMO Verified', 'Fair Trade Certified', 'Eco-Friendly Practices'].map((cert, index) => (
-                  <li key={index} className="flex items-center">
-                    <svg className="w-5 h-5 text-[#3A7D44] mr-2" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" />
-                    </svg>
-                    <span className="text-[#1E3F22]">{cert}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="md:w-1/2 grid grid-cols-2 gap-4">
-              {[1, 2, 3, 4].map((item) => (
-                <div key={item} className="bg-[#F5F5F0] rounded-lg p-4 flex items-center justify-center">
-                  <div className="w-16 h-16 rounded-full bg-[#3A7D44]/20 flex items-center justify-center">
-                    <svg className="w-8 h-8 text-[#3A7D44]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12,2L15.09,8.26L22,9.27L17,14.14L18.18,21.02L12,17.77L5.82,21.02L7,14.14L2,9.27L8.91,8.26L12,2M12,5.5L10.16,9.05L6.62,9.63L9.31,12.26L8.68,15.77L12,14.09L15.32,15.77L14.69,12.26L17.38,9.63L13.84,9.05L12,5.5Z" />
-                    </svg>
+        {/* Process timeline - Modern horizontal steps */}
+        <div ref={processRef} className="mb-32 relative">
+          <motion.h3 
+            className="text-3xl font-bold text-[#1E3F22] text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            Our Process
+          </motion.h3>
+          
+          <div className="hidden md:block relative max-w-5xl mx-auto">
+            {/* Horizontal connecting line */}
+            <div className="absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-[#3A7D44]/20 via-[#6CAE3E]/40 to-[#3A7D44]/20 rounded-full"></div>
+            
+            {/* Process steps */}
+            <div className="grid grid-cols-5 gap-4">
+              {processSteps.map((step, index) => (
+                <div key={index} className="process-step relative">
+                  {/* Step icon */}
+                  <div className="flex justify-center">
+                    <div 
+                      className="w-14 h-14 rounded-full flex items-center justify-center bg-white border-4 border-[#F5F7F2] z-10 shadow-md"
+                      style={{ 
+                        background: `linear-gradient(135deg, white, ${step.color}10)`,
+                      }}
+                    >
+                      <div className="text-[#3A7D44]">
+                        {step.icon}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Step number */}
+                  <div 
+                    className="absolute top-0 right-15 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                    style={{ 
+                      backgroundColor: step.color,
+                      transform: "translate(25%, -25%)"
+                    }}
+                  >
+                    {index + 1}
+                  </div>
+                  
+                  {/* Step content */}
+                  <div className={`mt-6 text-center ${index % 2 === 0 ? '' : 'mt-8'}`}>
+                    <h4 className="font-bold text-[#1E3F22] mb-2">{step.title}</h4>
+                    <p className="text-sm text-[#3A7D44]/80">{step.description}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </motion.div>
+          
+          {/* Mobile process steps */}
+          <div className="md:hidden space-y-8">
+            {processSteps.map((step, index) => (
+              <div key={index} className="process-step flex items-start">
+                <div className="relative">
+                  <div 
+                    className="w-12 h-12 rounded-full flex items-center justify-center bg-white shadow-md mr-4"
+                    style={{ 
+                      background: `linear-gradient(135deg, white, ${step.color}10)`,
+                    }}
+                  >
+                    <div className="text-[#3A7D44]">
+                      {step.icon}
+                    </div>
+                  </div>
+                  
+                  <div 
+                    className="absolute top-0 right-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                    style={{ 
+                      backgroundColor: step.color,
+                      transform: "translate(25%, -25%)"
+                    }}
+                  >
+                    {index + 1}
+                  </div>
+                  
+                  {/* Vertical line connecting to next step */}
+                  {index < processSteps.length - 1 && (
+                    <div className="process-line absolute top-12 left-1/2 w-0.5 h-16 -translate-x-1/2 bg-gradient-to-b from-[#3A7D44]/40 to-[#6CAE3E]/20"></div>
+                  )}
+                </div>
+                
+                <div className="flex-1">
+                  <h4 className="font-bold text-[#1E3F22] mb-2">{step.title}</h4>
+                  <p className="text-sm text-[#3A7D44]/80">{step.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Certifications - Modern grid layout */}
+        <div ref={certificationRef} className="mb-20">
+          <motion.h3 
+            className="text-3xl font-bold text-[#1E3F22] text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            Our Certifications
+          </motion.h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {certifications.map((cert, index) => (
+              <motion.div 
+                key={index}
+                className="cert-card bg-white/60 backdrop-blur-sm rounded-2xl p-6 flex flex-col items-center text-center hover:shadow-lg transition-all duration-300 border border-[#3A7D44]/10"
+                whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              >
+                <div 
+                  className="w-16 h-16 rounded-full flex items-center justify-center mb-4"
+                  style={{ 
+                    background: `linear-gradient(135deg, ${cert.color}10, ${cert.color}20)`,
+                  }}
+                >
+                  <div className="text-[#3A7D44]">
+                    {cert.icon}
+                  </div>
+                </div>
+                <h4 className="font-bold text-[#1E3F22] mb-2">{cert.name}</h4>
+                <p className="text-sm text-[#3A7D44]/80">{cert.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
 
         {/* Call to action */}
         <motion.div 
-          className="mt-16 text-center"
+          className="mt-20 text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -199,15 +569,22 @@ const Services = () => {
         >
           <a 
             href="#about" 
-            className="inline-flex items-center text-[#3A7D44] font-medium hover:text-[#2C5E33] transition-colors"
+            className="inline-flex items-center justify-center bg-[#3A7D44] hover:bg-[#2C5E33] text-white font-medium py-4 px-8 rounded-full transition-all duration-300 group"
           >
-            <span>Learn more about our farming practices</span>
-            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
+            <span>Learn More About Our Practices</span>
+            <ChevronRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform duration-300" />
           </a>
         </motion.div>
       </div>
+
+      {/* CSS for gradient border animation */}
+      <style jsx>{`
+        @keyframes gradientBorderAnimation {
+          0% { background-position: 0% 50% }
+          50% { background-position: 100% 50% }
+          100% { background-position: 0% 50% }
+        }
+      `}</style>
     </section>
   );
 };
